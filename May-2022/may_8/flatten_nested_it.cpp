@@ -115,6 +115,9 @@ const double PI = 3.1415926535897932384626;
 /*  Approach -
     Ignore the NestedInteger not defined errors (its an ADT) code was accepted on leetcode.
 
+    If the NestedInteger is an integer, directly add it to the flattenList
+    if its a nested list then we need to traverse it using dfs (to check for lists inside lists)
+
 */
 
 /**

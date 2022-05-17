@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -69,116 +68,79 @@ void _print(T const &c)
     cerr << "}";
 }
 
-// Varadiac I/O
-template <typename... T>
-void read(T &...args)
-{
-    ((cin >> args), ...);
-}
-template <typename... T>
-void write(T &&...args)
-{
-    ((cout << args << " "), ...);
-    cout << "\n";
-}
+// Function definitions
+void Add_edge(int v1, int v2, int w);
+void dfs(int vertex);
 
 // constants
 const int mod = 1'000'000'007;
-const int N = 1e7, M = N;
+const int N = 1e5 + 10, M = N;
 const double PI = 3.1415926535897932384626;
-vi graph[N]; // For Adjacency List
+vpii graph[N]; // For Adjacency List
+bool vis[N];
+int ct = 0;
 
 /*
-    Link - https://leetcode.com/problems/132-pattern/
-    Problem - 132 Pattern
-    Difficulty - Medium
-    contest - No (daily challenge May 2022)
-    Status - solved
-    Date - 7/5/22
+    Link - https://leetcode.com/problems/network-delay-time/
+    Problem - Network time delay
+    Difficulty - Medium (Dijikstra's algorithm)
+    contest - No
+    Status - Solved
+    Date - 14/5/22
 */
 /*  Approach -
+        Use Dijikstra's algorithm to find the shortest path to every node from the given source
+        node.
+        Shortest path in this case represents time required to reach that node
+        In Dijikstra initially all weight values are set to infinity, if some value is still infinity
+        then it means that we never reached that node, so our answer will be -1 (cant reach every node)
 
-    O(n) Approach - Using monotonous Decreasing stack
-
-    1) We need to keep track of the minimum element occuring before nums[k]
-    2) We append every element to the stack, then we pop all the elements that are smaller than nums[k]
-    3) We need to keep element just greater than nums[i] at the top, (this will be our nums[j])
-    4) now we have nums[k] < nums[i] for finding nums[i] we need to an element smaller than nums[k]
-
-    how do we find it - we have been keeping track of leftMin so,
-
-                        if leftMin < nums[k], bingo
-                        else leftMin = nums[k]
-
-    Other Approaches -
-        https://www.youtube.com/watch?v=8nx5dxFuvLo
-
+        if we do reach every node, then the answer will time taken to reach the farthest node.
 */
-class Solution1 // O(n^3) - Brute Force 
-{
 
+class Solution
+{
 public:
-    bool find132pattern(vi nums)
+    int networkDelayTime(vector<vector<int>> &times, int n, int k)
     {
-        for (int i = 0; i < nums.size(); i++)
+
+        for (auto &v : times)
         {
-            for (int j = i + 1; j < nums.size(); j++)
+            Add_edge(v[0], v[1], v[2]);
+        }
+
+        priority_queue<pii, vpii, greater<pii>> pq; // store -> {distance from source, node}
+        vi dist(n + 1, INT_MAX);
+        pq.push({0, k});
+        dist[k] = 0;
+        while (!pq.empty())
+        {
+            pii top = pq.top();
+            pq.pop();
+            int u = top.second; //  select closest node
+            if (vis[u])
+                continue;               // If already visited node is popped we don't visit it
+            vis[u] = true;              // mark selected node as visited;
+            for (auto child : graph[u]) // checking every neighbour of current node
             {
-                for (int k = j + 1; k < nums.size(); k++)
+                int v = child.first;   // neighbour node
+                int wt = child.second; // distance if neighbour from source node
+                if (vis[v] == false && dist[v] > dist[u] + wt)
                 {
-                    if (nums[i] < nums[k] && nums[k] < nums[j])
-                        return true;
+                    dist[v] = dist[u] + wt;
+                    pq.push({dist[v], v});
                 }
             }
         }
-        return false;
-    }
-};
-class Solution2 // O(n^2) gives TLE
-{
-public:
-    bool find132pattern(vector<int> &nums)
-    {
-        int leftMin = nums[0];
-        for (int j = 1; j < nums.size() - 1; j++)
+        int res = 0;
+        Fo(i, 1, dist.size()) // finding the farthest node
         {
-            for (int k = j + 1; k < nums.size(); k++)
-            {
-                if (nums[k] > leftMin && nums[j] > nums[k])
-                {
-                    return true;
-                }
-            }
-            leftMin = min(leftMin, nums[j]);
-        }
-        return false;
-    }
-};
 
-class Solution // O(n), one pass solution
-{
-public:
-    bool find132pattern(vector<int> &nums)
-    {
-        stack<pii> st;
-        int n = nums.size();
-        int leftMin = nums[0];
-
-        Fo(k, 1, n)
-        {
-            while (!st.empty() && nums[k] >= st.top().first)
-            {
-                st.pop();
-            }
-            if (!st.empty() && nums[k] > st.top().second)
-            {
-                return true;
-            }
-            st.push({nums[k], leftMin});
-            leftMin = min(leftMin, nums[k]);
-            debug(st.top().first, st.top().second);
+            res = max(res, dist[i]);
         }
-        return false;
+        if (res == INT_MAX)
+            return -1;
+        return res;
     }
 };
 
@@ -199,12 +161,28 @@ int main()
 #endif
 
     Solution s;
-    int n;
-    read(n);
-    vi nums(n);
-    fo(i, n) read(nums[i]);
-    bool res = s.find132pattern(nums); // store return value
-    write(res);
+    int res; // store return value
+    int n, m, k;
+    cin >> n >> m >> k;
+
+    vvi times;
+    fo(i, m)
+    {
+        vi temp;
+        fo(j, 3)
+        {
+            int v;
+            cin >> v;
+            temp.pb(v);
+        }
+        times.pb(temp);
+    }
+    for (auto v : times)
+    {
+        debcon(v);
+    }
+    res = s.networkDelayTime(times, n, k);
+    cout << res << "\n";
 
 // Calculating Runtime
 #ifndef ONLINE_JUDGE
@@ -213,4 +191,10 @@ int main()
     cerr << "[Finished in " << setprecision(3) << chrono::duration<double, milli>(diff).count() << " ms]\n";
 #endif
     return 0;
+}
+
+void Add_edge(int v1, int v2, int w)
+{
+    graph[v1].push_back({v2, w});
+    // graph[v2].push_back({v1, w});*/ihoh9
 }
