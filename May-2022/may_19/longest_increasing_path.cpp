@@ -74,26 +74,67 @@ vpii graph[N]; // For Adjacency List
 bool vis[N];
 
 /*
-    Link -
-    Problem -
-    Difficulty -
-    topic -
-    Status -
-    Date -
+    Link - https://leetcode.com/problems/longest-increasing-path-in-a-matrix/
+    Problem - longest increasing path
+    Difficulty - hard
+    topic - Matrix graph, DP (caching)
+    Status - Solved
+    Date - 19/5/22
 */
 /*  Approach -
 
+        for each value given matrix - we have to calculate longest possible path from that value 
+        & then choose the maximum 
+
+            9  9  4      1  1  1
+            6  6  8  =>  1  1  1 
+            2  1  1      1  1  1
+    
 */
 
 class Solution
 {
+    int maxPath, n, m;
+    vvi dp;
+
 public:
+    int dfs(vvi &matrix, int r, int c)
+    {
+        if (dp[r][c])
+        {
+            return dp[r][c];
+        }
+        dp[r][c] = 1;
+        vpii steps = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (auto [i, j] : steps)
+        {
+            int new_r = r + i;
+            int new_c = c + j;
+            if (new_r < 0 || new_c < 0 || new_r >= matrix.size() || new_c >= matrix[r].size() || matrix[new_r][new_c] <= matrix[r][c])
+            {
+                continue;
+            }
+            dp[r][c] = max(dp[r][c], 1 + dfs(matrix, new_r, new_c));
+        }
+        return dp[r][c];
+    }
+    int longestIncreasingPath(vector<vector<int>> &matrix)
+    {
+        maxPath = 0, n = size(matrix), m = size(matrix[0]);
+        dp.resize(n, vector<int>(m));
+        fo(i, n)
+            fo(j, m)
+                maxPath = max(maxPath, dfs(matrix, i, j));
+        return maxPath;
+    }
 };
 
 void code()
 {
+    vector<vector<int>> matrix = {{9, 9, 4}, {6, 6, 8}, {2, 1, 1}};
     Solution s;
-    int res; // store return value
+    int res = s.longestIncreasingPath(matrix); // store return value
+    cout << res << "\n";
 }
 int main()
 {

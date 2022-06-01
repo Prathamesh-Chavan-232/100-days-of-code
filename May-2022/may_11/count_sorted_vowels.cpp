@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -22,24 +21,27 @@ typedef pair<ll, ll> pl;
 typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef vector<pii> vpii;
-typedef vector<pii> vpii;
 typedef vector<pl> vpl;
 typedef vector<vi> vvi;
 typedef vector<vl> vvl;
-typedef map<int, int> mii;
-typedef map<ll, ll> ml;
-typedef set<ll> sl;
-typedef unordered_map<int, int> umii;
-typedef unordered_map<ll, ll> uml;
-typedef unordered_set<ll> usl;
 
-// Debugging tools
+// Varidiac Variable debugger
 #ifndef ONLINE_JUDGE
 #define debug(...) logger(#__VA_ARGS__, __VA_ARGS__)
 #else
 #define debug(...)
 #endif
+template <typename... Args>
+void logger(string varname, Args &&...values) // logger for varadiac debugging print statements
+{
 
+    cerr << varname << " =";
+    string delim = " ";
+    (..., (cerr << delim << values, delim = ", "));
+    cerr << "\n";
+}
+
+// STL vector / set (of any type) debugger
 #ifndef ONLINE_JUDGE
 #define debcon(x)        \
     cerr << #x << " = "; \
@@ -48,71 +50,34 @@ typedef unordered_set<ll> usl;
 #else
 #define debcon(x)
 #endif
-
-#ifndef ONLINE_JUDGE
-#define debmap(x)        \
-    cerr << #x << " = "; \
-    _printmap(x);        \
-    cerr << "\n";
-#else
-#define debmap(x)
-#endif
-
-// Function definitions
-template <typename... Args>
-void logger(string varname, Args &&...values) // logger for varadiac debugging print statements
-{
-
-    cerr << varname << " = ";
-    string delim = "";
-    (..., (cerr << delim << values, delim = ", "));
-    cerr << "\n";
-}
-
 template <typename T>
-void _print(T const &c) // print any type of vector / set
+void _print(T const &c)
 {
     cerr << "{ ";
     foreach (it, c)
-        cerr << *it << ", ";
-    cerr << "}";
-}
-
-template <typename T, typename U>
-void _printmap(map<T, U> m) // print any type of map
-{
-    cerr << "{ ";
-    formap(m)
     {
-        cerr << "{" << key << "," << value << "} ";
+        cerr << *it << ", ";
     }
     cerr << "}";
 }
 
-// Varadiac I/O
-template <typename... T>
-void read(T &...args)
-{
-    ((cin >> args), ...);
-}
-template <typename... T>
-void write(T &&...args)
-{
-    ((cout << args << " "), ...);
-    cout << "\n";
-}
+// Function definitions
+void Add_edge(int v1, int v2);
+void dfs(int vertex);
 
 // constants
 const int mod = 1'000'000'007;
-const int N = 1e7, M = N;
+const int N = 1e5 + 10, M = N;
 const double PI = 3.1415926535897932384626;
-vi graph[N]; // For Adjacency List
+
+vpii graph[N]; // For Adjacency List
+bool vis[N];
 
 /*
     Link -
     Problem -
     Difficulty -
-    contest -
+    topic -
     Status -
     Date -
 */
@@ -120,34 +85,55 @@ vi graph[N]; // For Adjacency List
 
 */
 
-class Solution2
+class Solution
 {
+    vector<string> str;
+    int n;
+    int res = 0;
+    const vector<char> vowels = {'a', 'e', 'i', 'o', 'u'};
+
 public:
-    int countVowelStrings(int n)
+    void generate(int k, char last)
     {
-        debug(n);
-        int res = 0;
-        Fo(i, 1, n + 2)
+        if (k == 0)
         {
-            int sum = 0;
-            Fo(j, 1, i + 1)
+            // debug(s);
+            // str.pb(s);
+            res++;
+            return;
+        }
+        for (char ch : vowels)
+        {
+            if (last <= ch)
             {
-                sum += j; // j = 1, j = 1, 2, j = 1, 2,3
-                /*
-                    for i = 1 sum = 1 
-                        i = 2 sum = 3 (1 + 2)
-                        i = 3 sum = 6 (1 + 2 + 3)
-                    We have to add 1 + (1 + 2) + (1 + 2 + 3) ..... 
-                */
-                res += sum;
-                debug(i, j, sum, res);
+                generate(k - 1, ch);
             }
         }
+    }
+    int countVowelStrings(int n)
+    {
+        this->n = n;
+        int i = 0;
+        string s = "";
+        generate(n, 'a');
+        // fo(i, str.size())
+        // {
+        //     cout << str[i] << ", ";
+        // }
+        // cout << "\n";
+        // cout << str.size() << "\n";
         return res;
     }
 };
 
-
+void code()
+{
+    int n;
+    Solution s;
+    cin >> n;
+    int res = s.countVowelStrings(n); // store return value
+    cout << res << "\n";
+}
 int main()
 {
     // Start time
@@ -164,11 +150,8 @@ int main()
     freopen("C:/Prathamesh/Programming/err.txt", "w", stderr);
 #endif
 
-    Solution s;
-    int n;
-    read(n);
-    int res = s.countVowelStrings(n); // store return value
-    write(res);
+    code();
+
 // Calculating Runtime
 #ifndef ONLINE_JUDGE
     auto end = chrono::steady_clock::now();

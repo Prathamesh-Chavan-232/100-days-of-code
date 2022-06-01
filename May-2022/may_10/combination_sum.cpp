@@ -74,22 +74,104 @@ vpii graph[N]; // For Adjacency List
 bool vis[N];
 
 /*
-    Link -
-    Problem -
-    Difficulty -
-    contest -
-    Status -
-    Date -
+    Link - https://leetcode.com/problems/combination-sum-iii/
+    Problem - combination sum iii
+    Difficulty - medium
+    topic - back tracking
+    Status - solved
+    Date - 10/5/22 & 19/5/22
 */
-/*  Approach -
+/*  Approach 1 -
+
+    Back tracking -
+
+
+    we have to find all possible combinations of sum = n
+    where i <= 9
+    ∴           [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+              _ _ _ _ _ _ _ [] _ _ _ _ _ _ _ _ _ _
+            /   /   /   /   |   \   \   \   \     \
+          [1] [2] [3] [4]  [5] [6] [7] [8] [9]    []
+         /  \
+        *    #
+      /  \  / \
+    ... (and so on)
+    Depending on the value of k, the depth of the recursion tree will increase,
+    here initially we have 10 choices (add anything from 1 - 9 or dont add anything (this is because we want to back track))
+
+    After that each node of the tree will have 2 choices,
+    * -> either add something, or #  /* -> dont add something (back track)
+    Also we dont choose smaller numbers to avoid repetition
+
+    e.g. k = 2, n = 3
+              _ _ _ _ _ _ _ [] _ _ _ _ _ _ _ _ _ _
+            /   /   /   /   |   \   \   \   \     \
+          [1] [2] [3] [4]  [5] [6] [7] [8] [9]    []
+         /  \  \                                 / \
+      [1,2]   [1] (wont be pushed)                 []
+(pushed)     /  \
+
+Since this is brute force approach, all other incorrect choices will also be checked.
+*/
+
+/*  Approach 2 -
 
 */
-
 class Solution
 {
-public:
-};
+    vvi res;
 
+public:
+    void generate(vi &combination, int k, int n, int sum, int i)
+    {
+        if (k == 0)
+        {
+            if (sum == n)
+            {
+                res.pb(combination);
+            }
+            return;
+        }
+        if (i > 9)
+            return;
+
+        combination.pb(i);
+        sum += i;
+
+        generate(combination, k - 1, n, sum, i + 1);
+
+        combination.pop_back();
+        sum -= i;
+
+        generate(combination, k, n, sum, i + 1);
+    }
+    vector<vector<int>> combinationSum3(int k, int n)
+    {
+        vi combination;
+        int sum = 0;
+        generate(combination, k, n, sum, 1);
+        return res;
+    }
+};
+void code()
+{
+    Solution s;
+    int n, k;
+    cin >> k >> n;
+    vvi res = s.combinationSum3(k, n); // store return value
+    debug(res.size());
+    for (auto v : res)
+    {
+        debug(v.size());
+        for (auto i : v)
+        {
+            cout << i << " ";
+        }
+        cout << "\n";
+    }
+}
 int main()
 {
     // Start time
@@ -106,9 +188,7 @@ int main()
     freopen("C:/Prathamesh/Programming/err.txt", "w", stderr);
 #endif
 
-    Solution s;
-    int res; // store return value
-
+    code();
 // Calculating Runtime
 #ifndef ONLINE_JUDGE
     auto end = chrono::steady_clock::now();

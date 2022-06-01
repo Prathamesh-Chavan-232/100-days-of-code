@@ -87,7 +87,7 @@ bool vis[N];
     e.g -> 2,3,4
         first digit - 
     2                        ""
-                        /    |      \
+                     /      |        \
                    a        b         c
                  / \ \    / \ \    / | \ 
     3           d e f     d e f    d e f
@@ -112,6 +112,7 @@ public:
         }
         int currNum = nums[i];       // Current number between 2 - 9
         string s = letters[currNum]; // string of letters corresponding to current number
+        debug(s);
         for (auto ch : s)
         {
             combination.pb(ch);
