@@ -21,24 +21,27 @@ typedef pair<ll, ll> pl;
 typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef vector<pii> vpii;
-typedef vector<pii> vpii;
 typedef vector<pl> vpl;
 typedef vector<vi> vvi;
 typedef vector<vl> vvl;
-typedef map<int, int> mii;
-typedef map<ll, ll> ml;
-typedef set<ll> sl;
-typedef unordered_map<int, int> umii;
-typedef unordered_map<ll, ll> uml;
-typedef unordered_set<ll> usl;
 
-// Debugging tools
+// Varidiac Variable debugger
 #ifndef ONLINE_JUDGE
 #define debug(...) logger(#__VA_ARGS__, __VA_ARGS__)
 #else
 #define debug(...)
 #endif
+template <typename... Args>
+void logger(string varname, Args &&...values) // logger for varadiac debugging print statements
+{
 
+    cerr << varname << " =";
+    string delim = " ";
+    (..., (cerr << delim << values, delim = ", "));
+    cerr << "\n";
+}
+
+// STL vector / set (of any type) debugger
 #ifndef ONLINE_JUDGE
 #define debcon(x)        \
     cerr << #x << " = "; \
@@ -47,94 +50,64 @@ typedef unordered_set<ll> usl;
 #else
 #define debcon(x)
 #endif
-
-#ifndef ONLINE_JUDGE
-#define debmap(x)        \
-    cerr << #x << " = "; \
-    _printmap(x);        \
-    cerr << "\n";
-#else
-#define debmap(x)
-#endif
-
-// Function definitions
-template <typename... Args>
-void logger(string varname, Args &&...values) // logger for varadiac debugging print statements
-{
-
-    cerr << varname << " = ";
-    string delim = "";
-    (..., (cerr << delim << values, delim = ", "));
-    cerr << "\n";
-}
-
 template <typename T>
-void _print(T const &c) // print any type of vector / set
+void _print(T const &c)
 {
     cerr << "{ ";
     foreach (it, c)
-        cerr << *it << ", ";
-    cerr << "}";
-}
-
-template <typename T, typename U>
-void _printmap(map<T, U> m)
-{
-    cerr << "{ ";
-    formap(m)
     {
-        cerr << "{" << key << "," << value << "} ";
+        cerr << *it << ", ";
     }
     cerr << "}";
 }
-// Varadiac I/O
-template <typename... T>
-void r(T &...args)
-{
-    ((cin >> args), ...);
-}
-template <typename... T>
-void w(T &&...args)
-{
-    ((cout << args << " "), ...);
-    cout << "\n";
-}
+
+// Function definitions
+void Add_edge(int v1, int v2);
+void dfs(int vertex);
+
 // constants
 const int mod = 1'000'000'007;
-const int N = 1e7, M = N;
+const int N = 1e5 + 10, M = N;
 const double PI = 3.1415926535897932384626;
 
+vpii graph[N]; // For Adjacency List
+bool vis[N];
+
 /*
-    Link -
-    Problem -
-    Difficulty -
-    contest -
-    Status -
-    Date -
+    Link - https://leetcode.com/problems/remove-palindromic-subsequences/
+    Problem - Remove Palindromic Subsequence
+    Difficulty - Easy
+    Topic - Strings
+    Status - Solved
+    Date - 8/6/22
+
+    Note - 'Note that a subsequence does not necessarily need to be contiguous'
 */
 /*  Approach -
 
+    If the string is a palindrome, the answer is 1 and
+
+    If the string is not palindrome, the answer is 2, becuase:
+        String s only consists of two characters 'a' and 'b',
+        This implies, there always exists two different palindromic subsequence in the string, one consisting of all the a's and other consisting of all the b's.
+        We just need to identify if there is a need to return 2 as a result or 1(in case of palindrome)
+
+    Also if the string size is zero - the answer is 0
 */
 
 class Solution
 {
 public:
-    vector<vector<int>> transpose(vector<vector<int>> &matrix)
+    int removePalindromeSub(string S)
     {
-        int m = matrix.size(), n = matrix[0].size();
-        vector<vector<int>> tps(n, vector<int>(m, 0));
-
-        for (int i = 0; i < n; ++i)
-        {
-            for (int j = 0; j < m; ++j)
-            {
-                tps[i][j] = matrix[j][i];
-            }
-        }
-        return tps;
+        if (S == "")
+            return 0;
+        for (int i = 0, j = S.size() - 1; i < j; i++, j--)
+            if (S[i] != S[j])
+                return 2;
+        return 1;
     }
 };
-
 void code()
 {
     Solution s;
